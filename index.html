@@ -666,7 +666,7 @@
           <div class="card module-card" onclick="goTo('apply')">
             <div class="module-icon">🧮</div>
             <h3>2. Apply the Numbers</h3>
-            <p>Calculate margin, operating profit, run rate, and variance.</p>
+            <p>Calculate margin, EBITDA, run rate, and variance.</p>
             <p><span class="pill locked" id="welcomeApplyPill">Locked</span></p>
           </div>
           <div class="card module-card" onclick="goTo('mapper')">
@@ -729,8 +729,8 @@
             <div class="metric-grid">
               <div class="metric"><small>Gross Profit</small><strong id="grossProfit"></strong></div>
               <div class="metric"><small>Gross Margin</small><strong id="grossMargin"></strong></div>
-              <div class="metric"><small>Operating Profit</small><strong id="operatingProfit"></strong></div>
-              <div class="metric"><small>Operating Margin</small><strong id="operatingMargin"></strong></div>
+              <div class="metric"><small>EBITDA</small><strong id="operatingProfit"></strong></div>
+              <div class="metric"><small>EBITDA Margin</small><strong id="operatingMargin"></strong></div>
               <div class="metric"><small>Projected Run Rate</small><strong id="runRate"></strong></div>
               <div class="metric"><small>Projected Variance</small><strong id="variance"></strong></div>
             </div>
@@ -797,7 +797,7 @@
                   <optgroup label="Result Lines">
                     <option>Gross profit</option>
                     <option>Gross margin %</option>
-                    <option>Operating profit / EBIT</option>
+                    <option>EBITDA / EBITDADA</option>
                     <option>Net profit</option>
                   </optgroup>
                   <optgroup label="Non-P&L but Financially Important">
@@ -817,7 +817,7 @@
                   <option>COGS</option>
                   <option>Gross margin</option>
                   <option>OpEx</option>
-                  <option>Operating profit</option>
+                  <option>EBITDA</option>
                   <option>Cash flow</option>
                   <option>Customer retention</option>
                 </select>
@@ -879,11 +879,11 @@
       {
         id: "pnl",
         title: "P&L Statement",
-        short: "The financial story from revenue to profit.",
+        short: "The financial story from revenue to EBITDA and profit.",
         definition: "A Profit and Loss statement shows whether a business made money during a period. It starts with revenue, subtracts direct costs, subtracts operating expenses, and ends with profit.",
         why: "Managers use the P&L to understand whether their operations are helping the company grow profitably. It turns everyday decisions into financial results.",
         example: "A retail store manager may see revenue from device sales, accessory sales, and service activations. Costs may include product costs, commissions, staffing, rent, and other operating expenses.",
-        formula: "Revenue - COGS = Gross Profit. Gross Profit - OpEx = Operating Profit.",
+        formula: "Revenue - COGS = Gross Profit. Gross Profit - OpEx = EBITDA, before depreciation and amortization.",
         question: "What is the main purpose of a P&L statement?",
         choices: [
           "To show whether a business made money during a period",
@@ -963,7 +963,7 @@
         definition: "Operating expenses are costs required to run the business that are not directly tied to producing one unit or fulfilling one sale.",
         why: "Managers often control or influence OpEx through staffing, tools, travel, training, vendor usage, and process discipline.",
         example: "Salaries and benefits, software licenses, rent, marketing, travel, training, and professional services are common OpEx lines.",
-        formula: "Operating Profit = Gross Profit - OpEx.",
+        formula: "EBITDA = Gross Profit - OpEx.",
         question: "Which item is most likely OpEx?",
         choices: [
           "Product purchased for resale",
@@ -975,23 +975,23 @@
         feedback: "Marketing and promotions are typically operating expenses because they support the business rather than directly fulfill one sale."
       },
       {
-        id: "ebit",
-        title: "Operating Profit / EBIT",
-        short: "Profit from operations before interest and tax.",
-        definition: "Operating profit, also called EBIT, shows what the business earns from operations before interest and taxes.",
-        why: "Managers use operating profit to see whether the core business model is working before financing and tax effects.",
-        example: "Revenue can rise while operating profit falls if costs grow faster than revenue.",
-        formula: "EBIT = Gross Profit - OpEx.",
-        question: "Revenue increased, but EBIT fell. What does that usually suggest?",
+        id: "ebitda",
+        title: "EBITDA",
+        short: "Earnings before interest, taxes, depreciation, and amortization.",
+        definition: "EBITDA stands for Earnings Before Interest, Taxes, Depreciation, and Amortization. It helps show how the business is performing from operations before certain accounting and financing items are included.",
+        why: "At C Spire, EBITDA is an important measure because it helps leaders understand operational performance across the business. Managers influence EBITDA through revenue, direct costs, operating expenses, productivity, quality, and avoidable rework.",
+        example: "If revenue grows but labor, service delivery costs, credits, or other controllable expenses grow faster, EBITDA can still decline. That tells a manager the business may be growing but not becoming more profitable operationally.",
+        formula: "EBITDA = Earnings before interest, taxes, depreciation, and amortization.",
+        question: "Why is EBITDA useful for a manager to understand?",
         choices: [
-          "Costs likely grew faster than revenue",
-          "The company had no revenue",
-          "Gross profit is always equal to net profit",
-          "The P&L is no longer useful"
+          "It helps show how operations are performing before certain accounting and financing items are included",
+          "It only measures how much cash is in the bank today",
+          "It replaces the need to understand revenue or costs",
+          "It is only useful for the finance team and not for people managers"
         ],
         answer: 0,
-        feedback: "When operating profit falls despite revenue growth, cost growth or margin pressure is usually part of the story."
-      },
+        feedback: "Correct. EBITDA helps managers understand operational performance before certain accounting and financing items are included."
+      }
       {
         id: "netprofit",
         title: "Net Profit",
@@ -1051,6 +1051,15 @@
       applyComplete: false,
       mapperComplete: false
     };
+
+    // Migration from the earlier EBIT topic to the C Spire EBITDA topic.
+    if (state.topicCompleted && state.topicCompleted.ebit) {
+      state.topicCompleted.ebitda = true;
+      delete state.topicCompleted.ebit;
+    }
+    if (state.activeTopic === "ebit") {
+      state.activeTopic = "ebitda";
+    }
 
     const pages = [
       { id: "welcome", title: "Home", sub: "Start here" },
@@ -1290,7 +1299,7 @@
       document.getElementById("budget").value = 650000;
       document.getElementById("months").value = 6;
       document.getElementById("actualSpend").value = 372000;
-      document.getElementById("applyReflection").value = "Revenue is strong, but the run rate shows we need to manage service delivery and labor costs carefully so margin improvement reaches operating profit.";
+      document.getElementById("applyReflection").value = "Revenue is strong, but the run rate shows we need to manage service delivery and labor costs carefully so margin improvement reaches EBITDA.";
       updateAll();
     }
 
@@ -1364,8 +1373,8 @@ COGS: ${money(c.cogs)}
 Gross profit: ${money(c.grossProfit)}
 Gross margin: ${pct(c.grossMargin)}
 OpEx: ${money(c.opex)}
-Operating profit: ${money(c.operatingProfit)}
-Operating margin: ${pct(c.operatingMargin)}
+EBITDA: ${money(c.operatingProfit)}
+EBITDA margin: ${pct(c.operatingMargin)}
 
 3. Budget and Run-Rate Thinking
 Annual budget: ${money(c.budget)}

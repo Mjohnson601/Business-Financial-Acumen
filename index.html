@@ -40,6 +40,18 @@
       grid-template-columns: 280px 1fr;
     }
 
+    .app-shell.welcome-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .app-shell.welcome-mode aside {
+      display: none;
+    }
+
+    .app-shell.welcome-mode .page {
+      max-width: 1180px;
+    }
+
     aside {
       position: sticky;
       top: 0;
@@ -157,18 +169,6 @@
 
     main { min-width: 0; }
 
-    .app-shell.welcome-mode {
-      grid-template-columns: 1fr;
-    }
-
-    .app-shell.welcome-mode aside {
-      display: none;
-    }
-
-    .app-shell.welcome-mode .page {
-      max-width: 1180px;
-    }
-
     .page {
       display: none;
       max-width: 1160px;
@@ -196,8 +196,7 @@
       margin: -30px -24px 26px;
     }
 
-
-    .hero-content { position: relative; max-width: 840px; z-index: 2; }
+    .hero-content { position: relative; max-width: 900px; z-index: 2; }
 
     .eyebrow {
       text-transform: uppercase;
@@ -614,7 +613,6 @@
     @media (max-width: 640px) {
       nav { grid-template-columns: 1fr; }
       .form-grid, .metric-grid { grid-template-columns: 1fr; }
-      .hero::after { display: none; }
       .footer-actions { flex-direction: column; }
       .page { padding-left: 16px; padding-right: 16px; }
       .hero { margin-left: -16px; margin-right: -16px; }
@@ -689,7 +687,7 @@
             <div class="topic-list" id="topicList"></div>
           </div>
 
-          <div class="card">
+          <div class="card" id="topicCard">
             <div id="topicContent"></div>
           </div>
         </div>
@@ -729,8 +727,8 @@
             <div class="metric-grid">
               <div class="metric"><small>Gross Profit</small><strong id="grossProfit"></strong></div>
               <div class="metric"><small>Gross Margin</small><strong id="grossMargin"></strong></div>
-              <div class="metric"><small>EBITDA</small><strong id="operatingProfit"></strong></div>
-              <div class="metric"><small>EBITDA Margin</small><strong id="operatingMargin"></strong></div>
+              <div class="metric"><small>EBITDA</small><strong id="ebitdaValue"></strong></div>
+              <div class="metric"><small>EBITDA Margin</small><strong id="ebitdaMargin"></strong></div>
               <div class="metric"><small>Projected Run Rate</small><strong id="runRate"></strong></div>
               <div class="metric"><small>Projected Variance</small><strong id="variance"></strong></div>
             </div>
@@ -740,7 +738,7 @@
                 <li>Are costs growing faster than revenue?</li>
                 <li>Is margin strong enough to cover OpEx?</li>
                 <li>Is the run rate higher than the annual budget allows?</li>
-                <li>What operational decision can change the trend?</li>
+                <li>What operational decision can improve EBITDA?</li>
               </ul>
             </div>
           </div>
@@ -797,7 +795,8 @@
                   <optgroup label="Result Lines">
                     <option>Gross profit</option>
                     <option>Gross margin %</option>
-                    <option>EBITDA / EBITDADA</option>
+                    <option>EBITDA</option>
+                    <option>EBITDA margin</option>
                     <option>Net profit</option>
                   </optgroup>
                   <optgroup label="Non-P&L but Financially Important">
@@ -826,7 +825,7 @@
               <label>Estimated annual impact<input id="impact" type="number" value="65000" oninput="updateAll()"></label>
               <label>Direction
                 <select id="direction" onchange="updateAll()">
-                  <option>Improve profit / reduce cost</option>
+                  <option>Improve EBITDA / reduce cost</option>
                   <option>Increase revenue</option>
                   <option>Increase cost to improve future performance</option>
                   <option>Mixed impact</option>
@@ -841,7 +840,7 @@
                 </select>
               </label>
               <label class="full">Assumptions behind your estimate<textarea id="assumptions" oninput="updateAll()">Estimate is based on fewer repeat visits, better labor utilization, and fewer customer credits.</textarea></label>
-              <label class="full">Manager reflection<textarea id="reflection" oninput="updateAll()">I can influence margin by improving controllable costs, coaching productivity, and making tradeoffs earlier in the budget cycle.</textarea></label>
+              <label class="full">Manager reflection<textarea id="reflection" oninput="updateAll()">I can influence EBITDA by improving controllable costs, coaching productivity, and making tradeoffs earlier in the budget cycle.</textarea></label>
             </div>
             <div class="btn-row">
               <button class="btn" onclick="completeMapper()">Complete Mapper</button>
@@ -880,7 +879,7 @@
         id: "pnl",
         title: "P&L Statement",
         short: "The financial story from revenue to EBITDA and profit.",
-        definition: "A Profit and Loss statement shows whether a business made money during a period. It starts with revenue, subtracts direct costs, subtracts operating expenses, and ends with profit.",
+        definition: "A Profit and Loss statement shows whether a business made money during a period. It starts with revenue, subtracts direct costs, subtracts operating expenses, and helps leaders understand EBITDA and profit.",
         why: "Managers use the P&L to understand whether their operations are helping the company grow profitably. It turns everyday decisions into financial results.",
         example: "A retail store manager may see revenue from device sales, accessory sales, and service activations. Costs may include product costs, commissions, staffing, rent, and other operating expenses.",
         formula: "Revenue - COGS = Gross Profit. Gross Profit - OpEx = EBITDA, before depreciation and amortization.",
@@ -892,7 +891,7 @@
           "To replace customer service metrics"
         ],
         answer: 0,
-        feedback: "A P&L summarizes financial performance during a period by showing revenue, costs, and profit."
+        feedback: "A P&L summarizes financial performance during a period by showing revenue, costs, EBITDA, and profit."
       },
       {
         id: "revenue",
@@ -910,7 +909,7 @@
           "Increasing the number of transactions at the same price"
         ],
         answer: 0,
-        feedback: "Correct. Revenue can decrease when the average price drops (discounts or product mix), even if volume stays the same or increases."
+        feedback: "Revenue can decrease when the average price drops because of discounts or product mix, even if volume stays the same or increases."
       },
       {
         id: "cogs",
@@ -928,7 +927,7 @@
           "A general HR software subscription"
         ],
         answer: 0,
-        feedback: "Correct. The installation labor is directly tied to completing that customer order, so it is the clearest COGS example."
+        feedback: "The installation labor is directly tied to completing that customer order, so it is the clearest COGS example."
       },
       {
         id: "grossprofit",
@@ -963,15 +962,15 @@
         definition: "Operating expenses are costs required to run the business that are not directly tied to producing one unit or fulfilling one sale.",
         why: "Managers often control or influence OpEx through staffing, tools, travel, training, vendor usage, and process discipline.",
         example: "Salaries and benefits, software licenses, rent, marketing, travel, training, and professional services are common OpEx lines.",
-        formula: "EBITDA = Gross Profit - OpEx.",
+        formula: "EBITDA = Gross Profit - OpEx, before depreciation and amortization.",
         question: "Which item is most likely OpEx?",
         choices: [
+          "Marketing and promotions",
           "Product purchased for resale",
           "Direct shipping cost for a customer order",
-          "Marketing and promotions",
           "Replacement part for a customer installation"
         ],
-        answer: 2,
+        answer: 0,
         feedback: "Marketing and promotions are typically operating expenses because they support the business rather than directly fulfill one sale."
       },
       {
@@ -990,13 +989,13 @@
           "It is only useful for the finance team and not for people managers"
         ],
         answer: 0,
-        feedback: "Correct. EBITDA helps managers understand operational performance before certain accounting and financing items are included."
-      }
+        feedback: "EBITDA helps managers understand operational performance before certain accounting and financing items are included."
+      },
       {
         id: "netprofit",
         title: "Net Profit",
         short: "The bottom line after all costs.",
-        definition: "Net profit is the final profit after subtracting all expenses, including operating costs, interest, and taxes.",
+        definition: "Net profit is the final profit after subtracting all expenses, including operating costs, interest, taxes, depreciation, and amortization.",
         why: "Even if managers do not control every line, their decisions contribute to whether the company generates a healthy bottom line.",
         example: "A department may improve net profit by protecting revenue, reducing avoidable costs, or improving productivity.",
         formula: "Net Profit = Revenue - All Costs.",
@@ -1052,11 +1051,11 @@
       mapperComplete: false
     };
 
-    // Migration from the earlier EBIT topic to the C Spire EBITDA topic.
     if (state.topicCompleted && state.topicCompleted.ebit) {
       state.topicCompleted.ebitda = true;
       delete state.topicCompleted.ebit;
     }
+
     if (state.activeTopic === "ebit") {
       state.activeTopic = "ebitda";
     }
@@ -1072,13 +1071,19 @@
       localStorage.setItem("cspireBusinessAcumenState", JSON.stringify(state));
     }
 
+    function setShellMode() {
+      const shell = document.getElementById("appShell");
+      if (!shell) return;
+      shell.classList.toggle("welcome-mode", state.currentPage === "welcome");
+    }
+
     function renderNav() {
       const nav = document.getElementById("sideNav");
       nav.innerHTML = pages.map((p, i) => {
         const locked = p.locked && p.locked();
         const active = state.currentPage === p.id;
         const done = (p.id === "learn" && state.learnComplete) || (p.id === "apply" && state.applyComplete) || (p.id === "mapper" && state.mapperComplete);
-        return `<button class="nav-btn ${active ? "active" : ""} ${locked ? "locked" : ""}" onclick="${locked ? "" : `goTo('${p.id}')`}">
+        return `<button type="button" class="nav-btn ${active ? "active" : ""} ${locked ? "locked" : ""}" onclick="${locked ? "" : `goTo('${p.id}')`}">
           <span class="nav-index">${i + 1}</span>
           <span><span class="nav-title">${p.title}</span><span class="nav-sub">${p.sub}</span></span>
           <span class="nav-status">${done ? "✓" : locked ? "🔒" : ""}</span>
@@ -1086,19 +1091,17 @@
       }).join("");
     }
 
-    function setShellMode() {
-      const shell = document.getElementById("appShell");
-      if (!shell) return;
-      shell.classList.toggle("welcome-mode", state.currentPage === "welcome");
-    }
-
     function goTo(page) {
       const pageDef = pages.find(p => p.id === page);
       if (pageDef && pageDef.locked && pageDef.locked()) return;
+
       state.currentPage = page;
       saveState();
+
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-      document.getElementById("page-" + page).classList.add("active");
+      const selectedPage = document.getElementById("page-" + page);
+      if (selectedPage) selectedPage.classList.add("active");
+
       setShellMode();
       renderAll();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1106,14 +1109,30 @@
 
     function renderTopics() {
       const list = document.getElementById("topicList");
+      if (!list) return;
+
       list.innerHTML = topics.map(t => {
         const done = !!state.topicCompleted[t.id];
-        return `<button class="topic-btn ${state.activeTopic === t.id ? "active" : ""}" onclick="selectTopic('${t.id}')">
+        return `<button type="button" class="topic-btn ${state.activeTopic === t.id ? "active" : ""}" onclick="selectTopic('${t.id}')">
           <span><strong>${t.title}</strong><span>${t.short}</span></span>
           <span class="topic-status">${done ? "✓" : ""}</span>
         </button>`;
       }).join("");
+
       renderTopicContent();
+    }
+
+    function renderTopicListOnly() {
+      const list = document.getElementById("topicList");
+      if (!list) return;
+
+      list.innerHTML = topics.map(t => {
+        const done = !!state.topicCompleted[t.id];
+        return `<button type="button" class="topic-btn ${state.activeTopic === t.id ? "active" : ""}" onclick="selectTopic('${t.id}')">
+          <span><strong>${t.title}</strong><span>${t.short}</span></span>
+          <span class="topic-status">${done ? "✓" : ""}</span>
+        </button>`;
+      }).join("");
     }
 
     function selectTopic(id) {
@@ -1124,11 +1143,8 @@
     }
 
     function focusTopicContent() {
-      const content = document.getElementById("topicContent");
+      const content = document.getElementById("topicCard") || document.getElementById("topicContent");
       if (!content) return;
-
-      // On mobile, the lesson card sits below the topic list. This moves the learner
-      // directly to the lesson and knowledge check after they select a financial topic.
       setTimeout(() => {
         content.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 75);
@@ -1140,20 +1156,21 @@
 
       if (nextTopic) {
         selectTopic(nextTopic.id);
+      } else if (state.learnComplete) {
+        goTo("apply");
       } else {
-        if (state.learnComplete) {
-          goTo("apply");
-        } else {
-          const firstIncomplete = topics.find(t => !state.topicCompleted[t.id]);
-          if (firstIncomplete) selectTopic(firstIncomplete.id);
-        }
+        const firstIncomplete = topics.find(t => !state.topicCompleted[t.id]);
+        if (firstIncomplete) selectTopic(firstIncomplete.id);
       }
     }
 
     function renderTopicContent() {
       const t = topics.find(x => x.id === state.activeTopic) || topics[0];
       const done = !!state.topicCompleted[t.id];
-      document.getElementById("topicContent").innerHTML = `
+      const content = document.getElementById("topicContent");
+      if (!content) return;
+
+      content.innerHTML = `
         <div class="lesson-body">
           <span class="pill ${done ? "done" : ""}">${done ? "Completed" : "Knowledge check required"}</span>
           <h2 style="margin-top:12px;">${t.title}</h2>
@@ -1164,22 +1181,25 @@
           <div class="knowledge-check">
             <h3>Knowledge Check</h3>
             <p>${t.question}</p>
-            <div id="choices">${t.choices.map((c, i) => `<button class="choice" onclick="answerTopic('${t.id}', ${i}, this)">${c}</button>`).join("")}</div>
+            <div id="choices">${t.choices.map((c, i) => `<button type="button" class="choice" onclick="answerTopic('${t.id}', ${i}, this)">${c}</button>`).join("")}</div>
             <div id="topicFeedback" class="feedback"></div>
-            <button id="nextTopicBtn" class="btn next-topic-btn" onclick="goToNextTopic()">Next Financial Topic</button>
+            <button type="button" id="nextTopicBtn" class="btn next-topic-btn" onclick="goToNextTopic()">Next Financial Topic</button>
           </div>
         </div>
       `;
 
       if (done) {
-        const nextBtn = document.getElementById("nextTopicBtn");
-        if (nextBtn) {
-          const currentIndex = topics.findIndex(topic => topic.id === t.id);
-          const hasNext = currentIndex < topics.length - 1;
-          nextBtn.textContent = hasNext ? "Next Financial Topic" : "Continue to Apply the Numbers";
-          nextBtn.classList.add("show");
-        }
+        showNextTopicButton(t.id);
       }
+    }
+
+    function showNextTopicButton(topicId) {
+      const nextBtn = document.getElementById("nextTopicBtn");
+      if (!nextBtn) return;
+      const currentIndex = topics.findIndex(topic => topic.id === topicId);
+      const hasNext = currentIndex < topics.length - 1;
+      nextBtn.textContent = hasNext ? "Next Financial Topic" : "Continue to Apply the Numbers";
+      nextBtn.classList.add("show");
     }
 
     function answerTopic(topicId, choiceIndex, btn) {
@@ -1191,10 +1211,7 @@
 
       choices.forEach((choice, index) => {
         choice.classList.remove("correct", "wrong");
-        choice.disabled = false;
-        if (index === correctIndex) {
-          choice.classList.add("correct");
-        }
+        if (index === correctIndex) choice.classList.add("correct");
       });
 
       const feedback = document.getElementById("topicFeedback");
@@ -1205,47 +1222,45 @@
         state.learnComplete = topics.every(x => state.topicCompleted[x.id]);
         saveState();
 
-        feedback.className = "feedback good";
-        feedback.textContent = "Correct. " + t.feedback;
-
-        if (nextBtn) {
-          const currentIndex = topics.findIndex(topic => topic.id === topicId);
-          const hasNext = currentIndex < topics.length - 1;
-          nextBtn.textContent = hasNext ? "Next Financial Topic" : "Continue to Apply the Numbers";
-          nextBtn.classList.add("show");
+        if (feedback) {
+          feedback.className = "feedback good";
+          feedback.textContent = "Correct. " + t.feedback;
         }
 
+        showNextTopicButton(topicId);
         renderNav();
         renderTopicListOnly();
         updateAll();
       } else {
         btn.classList.add("wrong");
-        feedback.className = "feedback bad";
-        feedback.textContent = "Not quite. The correct answer is highlighted in green. Review the explanation, then try again.";
-
-        if (nextBtn) {
-          nextBtn.classList.remove("show");
+        if (feedback) {
+          feedback.className = "feedback bad";
+          feedback.textContent = "Not quite. The correct answer is highlighted in green. Review the explanation, then try again.";
         }
+        if (nextBtn) nextBtn.classList.remove("show");
       }
     }
 
-    function renderTopicListOnly() {
-      const list = document.getElementById("topicList");
-      if (!list) return;
-
-      list.innerHTML = topics.map(t => {
-        const done = !!state.topicCompleted[t.id];
-        return `<button class="topic-btn ${state.activeTopic === t.id ? "active" : ""}" onclick="selectTopic('${t.id}')">
-          <span><strong>${t.title}</strong><span>${t.short}</span></span>
-          <span class="topic-status">${done ? "✓" : ""}</span>
-        </button>`;
-      }).join("");
+    function val(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
     }
 
-    function val(id) { return document.getElementById(id)?.value || ""; }
-    function num(id) { return Number(val(id)) || 0; }
-    function money(n) { return Number(n || 0).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }); }
-    function pct(n) { return Number.isFinite(n) ? n.toFixed(1) + "%" : "0.0%"; }
+    function num(id) {
+      return Number(val(id)) || 0;
+    }
+
+    function money(n) {
+      return Number(n || 0).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      });
+    }
+
+    function pct(n) {
+      return Number.isFinite(n) ? n.toFixed(1) + "%" : "0.0%";
+    }
 
     function calculate() {
       const revenue = num("revenue");
@@ -1256,16 +1271,18 @@
       const actualSpend = num("actualSpend");
       const grossProfit = revenue - cogs;
       const grossMargin = revenue ? grossProfit / revenue * 100 : 0;
-      const operatingProfit = grossProfit - opex;
-      const operatingMargin = revenue ? operatingProfit / revenue * 100 : 0;
+      const ebitda = grossProfit - opex;
+      const ebitdaMargin = revenue ? ebitda / revenue * 100 : 0;
       const runRate = actualSpend / months * 12;
       const variance = budget - runRate;
       const topicsComplete = topics.filter(t => state.topicCompleted[t.id]).length;
+
       let score = 0;
       score += Math.round((topicsComplete / topics.length) * 40);
       if (state.applyComplete) score += 25;
       if (state.mapperComplete) score += 35;
-      return { revenue, cogs, opex, budget, months, actualSpend, grossProfit, grossMargin, operatingProfit, operatingMargin, runRate, variance, topicsComplete, score };
+
+      return { revenue, cogs, opex, budget, months, actualSpend, grossProfit, grossMargin, ebitda, ebitdaMargin, runRate, variance, topicsComplete, score };
     }
 
     function setText(id, text) {
@@ -1277,8 +1294,8 @@
       const c = calculate();
       setText("grossProfit", money(c.grossProfit));
       setText("grossMargin", pct(c.grossMargin));
-      setText("operatingProfit", money(c.operatingProfit));
-      setText("operatingMargin", pct(c.operatingMargin));
+      setText("ebitdaValue", money(c.ebitda));
+      setText("ebitdaMargin", pct(c.ebitdaMargin));
       setText("runRate", money(c.runRate));
       setText("variance", money(c.variance) + (c.variance >= 0 ? " favorable" : " unfavorable"));
       setText("prevRole", val("role"));
@@ -1305,8 +1322,10 @@
 
     function completeApply() {
       const ok = val("applyReflection").trim().length > 30 && num("revenue") > 0 && num("months") > 0;
-      document.getElementById("applyAlert").classList.toggle("show", !ok);
+      const alert = document.getElementById("applyAlert");
+      if (alert) alert.classList.toggle("show", !ok);
       if (!ok) return;
+
       state.applyComplete = true;
       saveState();
       renderAll();
@@ -1315,8 +1334,10 @@
 
     function completeMapper() {
       const ok = val("decision").trim().length > 20 && val("plLine") && num("impact") > 0 && val("assumptions").trim().length > 20 && val("reflection").trim().length > 20;
-      document.getElementById("mapperAlert").classList.toggle("show", !ok);
+      const alert = document.getElementById("mapperAlert");
+      if (alert) alert.classList.toggle("show", !ok);
       if (!ok) return;
+
       state.mapperComplete = true;
       saveState();
       renderAll();
@@ -1328,15 +1349,33 @@
       const pageProgress = Math.round(((state.learnComplete ? 1 : 0) + (state.applyComplete ? 1 : 0) + (state.mapperComplete ? 1 : 0)) / 3 * 100);
       setText("overallPercent", pageProgress + "%");
       setText("scoreSummary", c.score + "/100");
-      document.getElementById("overallBar").style.width = pageProgress + "%";
-      document.getElementById("learnNextBtn").disabled = !state.learnComplete;
-      document.getElementById("applyNextBtn").disabled = !state.applyComplete;
-      document.getElementById("welcomeLearnPill").textContent = state.learnComplete ? "Complete" : `${c.topicsComplete}/${topics.length} topics`;
-      document.getElementById("welcomeLearnPill").className = "pill " + (state.learnComplete ? "done" : "");
-      document.getElementById("welcomeApplyPill").textContent = state.applyComplete ? "Complete" : state.learnComplete ? "Unlocked" : "Locked";
-      document.getElementById("welcomeApplyPill").className = "pill " + (state.applyComplete ? "done" : state.learnComplete ? "" : "locked");
-      document.getElementById("welcomeMapperPill").textContent = state.mapperComplete ? "Complete" : state.applyComplete ? "Unlocked" : "Locked";
-      document.getElementById("welcomeMapperPill").className = "pill " + (state.mapperComplete ? "done" : state.applyComplete ? "" : "locked");
+
+      const overallBar = document.getElementById("overallBar");
+      if (overallBar) overallBar.style.width = pageProgress + "%";
+
+      const learnNextBtn = document.getElementById("learnNextBtn");
+      if (learnNextBtn) learnNextBtn.disabled = !state.learnComplete;
+
+      const applyNextBtn = document.getElementById("applyNextBtn");
+      if (applyNextBtn) applyNextBtn.disabled = !state.applyComplete;
+
+      const welcomeLearnPill = document.getElementById("welcomeLearnPill");
+      if (welcomeLearnPill) {
+        welcomeLearnPill.textContent = state.learnComplete ? "Complete" : `${c.topicsComplete}/${topics.length} topics`;
+        welcomeLearnPill.className = "pill " + (state.learnComplete ? "done" : "");
+      }
+
+      const welcomeApplyPill = document.getElementById("welcomeApplyPill");
+      if (welcomeApplyPill) {
+        welcomeApplyPill.textContent = state.applyComplete ? "Complete" : state.learnComplete ? "Unlocked" : "Locked";
+        welcomeApplyPill.className = "pill " + (state.applyComplete ? "done" : state.learnComplete ? "" : "locked");
+      }
+
+      const welcomeMapperPill = document.getElementById("welcomeMapperPill");
+      if (welcomeMapperPill) {
+        welcomeMapperPill.textContent = state.mapperComplete ? "Complete" : state.applyComplete ? "Unlocked" : "Locked";
+        welcomeMapperPill.className = "pill " + (state.mapperComplete ? "done" : state.applyComplete ? "" : "locked");
+      }
     }
 
     function renderAll() {
@@ -1349,10 +1388,14 @@
       if (!confirm("Reset progress and start over?")) return;
       localStorage.removeItem("cspireBusinessAcumenState");
       state = { currentPage: "welcome", topicCompleted: {}, activeTopic: "pnl", learnComplete: false, applyComplete: false, mapperComplete: false };
+
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-      document.getElementById("page-welcome").classList.add("active");
+      const welcome = document.getElementById("page-welcome");
+      if (welcome) welcome.classList.add("active");
+
       setShellMode();
       renderAll();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function exportBrief() {
@@ -1373,8 +1416,8 @@ COGS: ${money(c.cogs)}
 Gross profit: ${money(c.grossProfit)}
 Gross margin: ${pct(c.grossMargin)}
 OpEx: ${money(c.opex)}
-EBITDA: ${money(c.operatingProfit)}
-EBITDA margin: ${pct(c.operatingMargin)}
+EBITDA: ${money(c.ebitda)}
+EBITDA margin: ${pct(c.ebitdaMargin)}
 
 3. Budget and Run-Rate Thinking
 Annual budget: ${money(c.budget)}
@@ -1412,7 +1455,8 @@ The manager completed progressive financial language lessons, passed topic-level
     }
 
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById("page-" + state.currentPage).classList.add("active");
+    const startingPage = document.getElementById("page-" + state.currentPage) || document.getElementById("page-welcome");
+    startingPage.classList.add("active");
     setShellMode();
     renderAll();
   </script>

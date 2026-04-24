@@ -1086,24 +1086,47 @@
     function answerTopic(topicId, choiceIndex, btn) {
       const t = topics.find(x => x.id === topicId);
       const choices = document.querySelectorAll("#choices .choice");
+
       choices.forEach((c, i) => {
         c.classList.remove("correct", "wrong");
         if (i === t.answer) c.classList.add("correct");
       });
-      btn.classList.add(choiceIndex === t.answer ? "correct" : "wrong");
 
       const feedback = document.getElementById("topicFeedback");
+
       if (choiceIndex === t.answer) {
         state.topicCompleted[topicId] = true;
         state.learnComplete = topics.every(x => state.topicCompleted[x.id]);
         saveState();
+
+        btn.classList.add("correct");
         feedback.className = "feedback good";
         feedback.textContent = "Correct. " + t.feedback;
+
+        // Update progress and navigation WITHOUT rebuilding the current lesson card.
+        // Rebuilding the lesson immediately after the click erased the answer feedback,
+        // which made the knowledge check feel like it was not working.
+        renderNav();
+        renderTopicListOnly();
+        updateAll();
       } else {
+        btn.classList.add("wrong");
         feedback.className = "feedback bad";
         feedback.textContent = "Not quite. Review the definition and example, then try again.";
       }
-      renderAll();
+    }
+
+    function renderTopicListOnly() {
+      const list = document.getElementById("topicList");
+      if (!list) return;
+
+      list.innerHTML = topics.map(t => {
+        const done = !!state.topicCompleted[t.id];
+        return `<button class="topic-btn ${state.activeTopic === t.id ? "active" : ""}" onclick="selectTopic('${t.id}')">
+          <span><strong>${t.title}</strong><span>${t.short}</span></span>
+          <span class="topic-status">${done ? "✓" : ""}</span>
+        </button>`;
+      }).join("");
     }
 
     function val(id) { return document.getElementById(id)?.value || ""; }

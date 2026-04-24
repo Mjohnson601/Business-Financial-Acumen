@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C Spire Business Acumen Lab</title>
+  <style>
+    :root {
+      --cspire-blue: #00A3E0;
+      --steel-blue: #003B5C;
+      --onyx: #13151D;
+      --violet: #4B1D5B;
+      --purple: #8646A0;
+      --orange: #FF671F;
+      --cool-grey: #85A7CA;
+      --nano-grey: #EDF1F7;
+      --glow: #B9DEF3;
+      --white: #ffffff;
+      --shadow: 0 18px 40px rgba(19, 21, 29, .12);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f7f9fc;
+      color: var(--onyx);
+      font-family: "Nunito", "Source Sans 3", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(135deg, var(--cspire-blue) 0%, var(--steel-blue) 58%, var(--violet) 100%);
+      padding: 36px 20px 56px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -90px;
+      width: 300px;
+      height: 300px;
+      border-radius: 64px;
+      background: rgba(255,255,255,.10);
+      transform: rotate(12deg);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 40px;
+      bottom: 30px;
+      width: 280px;
+      height: 160px;
+      border-radius: 54px;
+      border: 2px solid rgba(255,255,255,.55);
+    }
+
+    .wrap {
+      position: relative;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 52px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+    }
+
+    .burst {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(255,255,255,.16);
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .brand small {
+      display: block;
+      font-weight: 600;
+      color: rgba(255,255,255,.75);
+    }
+
+    h1 {
+      max-width: 770px;
+      margin: 0;
+      font-size: clamp(38px, 7vw, 68px);
+      line-height: 1.02;
+      font-weight: 300;
+      letter-spacing: -1.5px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      font-size: 18px;
+      color: rgba(255,255,255,.85);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-weight: 900;
+      font-size: 13px;
+      color: rgba(255,255,255,.75);
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 18px;
+      padding: 13px 18px;
+      background: var(--orange);
+      color: white;
+      font-weight: 900;
+      font-size: 15px;
+      text-decoration: none;
+      transition: .15s ease;
+    }
+
+    .btn:hover { filter: brightness(.96); transform: translateY(-1px); }
+
+    .btn.secondary {
+      background: white;
+      color: var(--steel-blue);
+      border: 1px solid #d9e1ea;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .score-card {
+      color: var(--onyx);
+      background: rgba(255,255,255,.95);
+    }
+
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .score {
+      color: var(--steel-blue);
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .progress {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #dce6ef;
+      margin: 18px 0 12px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: var(--cspire-blue);
+      transition: width .25s ease;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .module {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 8px 22px rgba(19,21,29,.06);
+    }
+
+    .module .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--nano-grey);
+      color: var(--steel-blue);
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .module:last-child .icon {
+      background: var(--orange);
+      color: white;
+    }
+
+    .module h3 { margin: 0; font-size: 17px; color: var(--steel-blue); }
+    .module p { margin: 8px 0 0; font-size: 13px; color: #586574; }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 22px;
+      margin-top: 24px;
+      align-items: start;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-title p {
+      margin: 0 0 3px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--cspire-blue);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .section-title h2 { margin: 0; font-size: 27px; color: var(--onyx); }
+
+    .glossary {
+      display: grid;
+      gap: 10px;
+    }
+
+    .term {
+      background: #f6f9fc;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .term strong {
+      display: block;
+      color: var(--steel-blue);
+      margin-bottom: 2px;
+    }
+
+    .term span {
+      color: #5b6876;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--onyx);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      margin-top: 6px;
+      border: 1px solid #d9e1ea;
+      border-radius: 18px;
+      padding: 13px;
+      font: inherit;
+      font-weight: 500;
+      background: white;
+      color: var(--onyx);
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      background: white;
+      border: 1px solid #edf1f7;
+      box-shadow: 0 8px 18px rgba(19,21,29,.05);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .metric small {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 900;
+      color: #6e7b88;
+      font-size: 11px;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--steel-blue);
+      font-size: 20px;
+      margin-top: 4px;
+    }
+
+    .runrate {
+      background: #f6f9fc;
+      border-radius: 26px;
+      margin-top: 24px;
+      padding: 18px;
+    }
+
+    .runrate h3 {
+      margin: 0 0 14px;
+      color: var(--steel-blue);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 13px;
+    }
+
+    .decision-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 22px;
+      margin-top: 24px;
+      align-items: stretch;
+    }
+
+    .export-card {
+      background: var(--steel-blue);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .export-card h2 { margin: 0; color: white; }
+    .export-card p { color: rgba(255,255,255,.75); }
+
+    .preview {
+      background: rgba(255,255,255,.1);
+      border-radius: 24px;
+      padding: 18px;
+      margin: 22px 0;
+    }
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      padding: 10px 0;
+      font-size: 14px;
+    }
+
+    .preview-row:last-child { border-bottom: 0; }
+    .preview-row span:first-child { color: rgba(255,255,255,.65); }
+    .preview-row span:last-child { font-weight: 900; text-align: right; }
+
+    .full { grid-column: 1 / -1; }
+
+    .print-note {
+      margin-top: 18px;
+      color: #5b6876;
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid-two, .decision-grid { grid-template-columns: 1fr; }
+      .modules { grid-template-columns: repeat(2, 1fr); }
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 620px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .modules, .form-grid, .metric-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 24px; }
+      .hero::after { display: none; }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="burst">C</div>
+          <div>C Spire<small>Business Acumen Lab</small></div>
+        </div>
+        <button class="btn" onclick="exportBrief()">⬇ Export Brief</button>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Manager Development Experience</div>
+          <h1>Build financial confidence. Make smarter operating decisions.</h1>
+          <p>A mobile-first learning tool for managers to learn core financial terms, calculate department metrics, connect decisions to the P&amp;L, and export evidence of applied skill.</p>
+        </div>
+        <div class="card score-card">
+          <div class="score-row">
+            <div>
+              <div style="font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#667484;font-size:12px;">Skill Evidence Score</div>
+              <div class="score" id="score">0</div>
+            </div>
+            <div style="font-size:42px;color:var(--cspire-blue)">✓</div>
+          </div>
+          <div class="progress"><span id="scoreBar"></span></div>
+          <p style="color:#5b6876;margin:0;">Score increases as the manager completes calculations, decision analysis, impact estimate, and reflection.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="modules">
+      <div class="module"><div class="icon">📘</div><h3>Financial Foundations</h3><p>Explain P&amp;L, revenue, COGS, gross profit, OpEx, EBIT, and net profit.</p></div>
+      <div class="module"><div class="icon">🧮</div><h3>Read the Numbers</h3><p>Calculate gross margin, operating profit, net margin, and run rate.</p></div>
+      <div class="module"><div class="icon">📊</div><h3>Operational Drivers</h3><p>Identify team decisions that influence revenue, cost, productivity, and customer experience.</p></div>
+      <div class="module"><div class="icon">📈</div><h3>Budget &amp; Forecasting</h3><p>Use variance and run-rate thinking to spot financial risks early.</p></div>
+      <div class="module"><div class="icon">🎯</div><h3>Executive Briefing</h3><p>Export a one-page Business Acumen Brief that proves applied understanding.</p></div>
+    </section>
+
+    <section class="grid-two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <p>Step 1</p>
+            <h2>Learn the language</h2>
+          </div>
+        </div>
+        <div class="glossary" id="glossary"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <p>Step 2</p>
+            <h2>Apply it to your department</h2>
+          </div>
+          <button class="btn secondary" onclick="loadSample()">↻ Sample</button>
+        </div>
+
+        <div class="form-grid">
+          <label>Manager role<input id="role" value="Wireless Retail Store Manager" oninput="updateAll()"></label>
+          <label>Revenue<input id="revenue" type="number" value="1200000" oninput="updateAll()"></label>
+          <label>COGS<input id="cogs" type="number" value="520000" oninput="updateAll()"></label>
+          <label>OpEx<input id="opex" type="number" value="410000" oninput="updateAll()"></label>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric"><small>Gross Profit</small><strong id="grossProfit"></strong></div>
+          <div class="metric"><small>Gross Margin</small><strong id="grossMargin"></strong></div>
+          <div class="metric"><small>Operating Profit</small><strong id="operatingProfit"></strong></div>
+          <div class="metric"><small>Operating Margin</small><strong id="operatingMargin"></strong></div>
+        </div>
+
+        <div class="runrate">
+          <h3>Budget run-rate check</h3>
+          <div class="form-grid" style="grid-template-columns:repeat(3,1fr);">
+            <label>Annual budget<input id="budget" type="number" value="460000" oninput="updateAll()"></label>
+            <label>Months elapsed<input id="months" type="number" min="1" max="12" value="7" oninput="updateAll()"></label>
+            <label>Actual spend<input id="actualSpend" type="number" value="286000" oninput="updateAll()"></label>
+          </div>
+          <div class="metric-grid" style="grid-template-columns:repeat(2,1fr);">
+            <div class="metric"><small>Projected Run Rate</small><strong id="runRate"></strong></div>
+            <div class="metric"><small>Projected Variance</small><strong id="variance"></strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="decision-grid">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <p>Step 3</p>
+            <h2>Decision-to-P&amp;L mapper</h2>
+          </div>
+        </div>
+        <p style="color:#5b6876;">Managers prove skill by connecting a real operational decision to financial impact.</p>
+        <div class="form-grid">
+          <label class="full">Decision or action<textarea id="decision" oninput="updateAll()">Reduce repeat truck rolls by improving first-time-right coaching.</textarea></label>
+          <label class="full">P&amp;L line affected<input id="plLine" value="COGS / service delivery cost" oninput="updateAll()"></label>
+          <label>Estimated annual impact<input id="impact" type="number" value="65000" oninput="updateAll()"></label>
+          <label>Confidence
+            <select id="confidence" onchange="updateAll()">
+              <option>Low</option>
+              <option selected>Medium</option>
+              <option>High</option>
+            </select>
+          </label>
+          <label class="full">Manager reflection<textarea id="reflection" oninput="updateAll()">I can influence margin by improving controllable costs, coaching productivity, and making tradeoffs earlier in the budget cycle.</textarea></label>
+        </div>
+      </div>
+
+      <div class="card export-card">
+        <div style="font-size:38px;color:var(--cspire-blue);">📄</div>
+        <h2>Exportable artifact</h2>
+        <p>The export creates a plain-language Business Acumen Brief for evaluation, coaching, or a manager/finance partner conversation.</p>
+
+        <div class="preview">
+          <div class="preview-row"><span>Role</span><span id="prevRole"></span></div>
+          <div class="preview-row"><span>Gross margin</span><span id="prevGrossMargin"></span></div>
+          <div class="preview-row"><span>Run rate</span><span id="prevRunRate"></span></div>
+          <div class="preview-row"><span>Decision impact</span><span id="prevImpact"></span></div>
+          <div class="preview-row"><span>Evidence score</span><span id="prevScore"></span></div>
+        </div>
+
+        <button class="btn" style="width:100%;padding:16px;" onclick="exportBrief()">Download Evaluation Brief →</button>
+      </div>
+    </section>
+
+    <p class="print-note">Hosting note: save this file as <strong>index.html</strong>, upload it to a GitHub repository, and enable GitHub Pages from the repository settings.</p>
+  </main>
+
+  <script>
+    const glossaryItems = [
+      ["Revenue", "Money earned before costs are deducted."],
+      ["COGS", "Direct costs tied to delivering the product or service."],
+      ["Gross Profit", "Revenue minus COGS."],
+      ["Gross Margin", "Gross profit shown as a percentage of revenue."],
+      ["OpEx", "Costs to run the business that are not directly tied to one sale."],
+      ["EBIT", "Operating profit before interest and tax."],
+      ["Net Profit", "The bottom line after all expenses."],
+      ["Variance", "The difference between actual and budget, or this year and last year."],
+      ["Run Rate", "A full-year projection based on current pace."],
+      ["Productivity", "Output achieved for the resources used."]
+    ];
+
+    document.getElementById("glossary").innerHTML = glossaryItems.map(([term, def]) =>
+      `<div class="term"><strong>${term}</strong><span>${def}</span></div>`
+    ).join("");
+
+    function val(id) {
+      return document.getElementById(id).value;
+    }
+
+    function num(id) {
+      return Number(val(id)) || 0;
+    }
+
+    function money(n) {
+      return Number(n || 0).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      });
+    }
+
+    function pct(n) {
+      return Number.isFinite(n) ? n.toFixed(1) + "%" : "0.0%";
+    }
+
+    function calculate() {
+      const revenue = num("revenue");
+      const cogs = num("cogs");
+      const opex = num("opex");
+      const budget = num("budget");
+      const months = Math.max(num("months"), 1);
+      const actualSpend = num("actualSpend");
+      const grossProfit = revenue - cogs;
+      const grossMargin = revenue ? grossProfit / revenue * 100 : 0;
+      const operatingProfit = grossProfit - opex;
+      const operatingMargin = revenue ? operatingProfit / revenue * 100 : 0;
+      const runRate = actualSpend / months * 12;
+      const variance = budget - runRate;
+
+      let score = 0;
+      if (revenue > 0) score += 20;
+      if (cogs >= 0 && opex >= 0) score += 20;
+      if (val("decision").length > 15) score += 20;
+      if (val("plLine").length > 5) score += 20;
+      if (num("impact") > 0 && val("reflection").length > 25) score += 20;
+
+      return { revenue, cogs, opex, budget, months, actualSpend, grossProfit, grossMargin, operatingProfit, operatingMargin, runRate, variance, score };
+    }
+
+    function updateAll() {
+      const c = calculate();
+
+      document.getElementById("grossProfit").textContent = money(c.grossProfit);
+      document.getElementById("grossMargin").textContent = pct(c.grossMargin);
+      document.getElementById("operatingProfit").textContent = money(c.operatingProfit);
+      document.getElementById("operatingMargin").textContent = pct(c.operatingMargin);
+      document.getElementById("runRate").textContent = money(c.runRate);
+
+      const varianceEl = document.getElementById("variance");
+      varianceEl.textContent = money(c.variance) + (c.variance >= 0 ? " favorable" : " unfavorable");
+      varianceEl.style.color = c.variance >= 0 ? "var(--steel-blue)" : "var(--orange)";
+
+      document.getElementById("score").textContent = c.score;
+      document.getElementById("scoreBar").style.width = c.score + "%";
+
+      document.getElementById("prevRole").textContent = val("role");
+      document.getElementById("prevGrossMargin").textContent = pct(c.grossMargin);
+      document.getElementById("prevRunRate").textContent = money(c.runRate);
+      document.getElementById("prevImpact").textContent = money(num("impact"));
+      document.getElementById("prevScore").textContent = c.score + "/100";
+    }
+
+    function loadSample() {
+      document.getElementById("role").value = "Technical Manager";
+      document.getElementById("revenue").value = 1800000;
+      document.getElementById("cogs").value = 790000;
+      document.getElementById("opex").value = 560000;
+      document.getElementById("budget").value = 650000;
+      document.getElementById("months").value = 6;
+      document.getElementById("actualSpend").value = 372000;
+      document.getElementById("decision").value = "Improve installation quality to reduce rework, credits, and customer churn.";
+      document.getElementById("plLine").value = "COGS, revenue retention, and customer experience cost";
+      document.getElementById("impact").value = 120000;
+      document.getElementById("confidence").value = "Medium";
+      document.getElementById("reflection").value = "The strongest financial improvement is not always a cut. In this case, better quality protects revenue and reduces avoidable operating pressure.";
+      updateAll();
+    }
+
+    function exportBrief() {
+      const c = calculate();
+      const brief = `C Spire Business & Financial Acumen Brief
+
+Manager role: ${val("role")}
+Completion score: ${c.score}/100
+
+1. Financial snapshot
+Revenue: ${money(c.revenue)}
+COGS: ${money(c.cogs)}
+Gross profit: ${money(c.grossProfit)}
+Gross margin: ${pct(c.grossMargin)}
+OpEx: ${money(c.opex)}
+Operating profit: ${money(c.operatingProfit)}
+Operating margin: ${pct(c.operatingMargin)}
+
+2. Budget and run-rate thinking
+Annual budget: ${money(c.budget)}
+Actual spend through ${c.months} month(s): ${money(c.actualSpend)}
+Projected full-year run rate: ${money(c.runRate)}
+Projected variance to budget: ${money(c.variance)} (${c.variance >= 0 ? "favorable" : "unfavorable"})
+
+3. Applied manager decision
+Decision analyzed: ${val("decision")}
+P&L line affected: ${val("plLine")}
+Estimated annual impact: ${money(num("impact"))}
+Confidence level: ${val("confidence")}
+
+4. Manager reflection
+${val("reflection")}
+
+5. Evidence of skill
+The manager calculated core financial measures, interpreted budget performance, connected an operational decision to a P&L line, estimated financial impact, and wrote a clear business reflection.`;
+
+      const blob = new Blob([brief], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "C-Spire-Business-Financial-Acumen-Brief.txt";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    updateAll();
+  </script>
+</body>
+</html>

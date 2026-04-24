@@ -412,10 +412,32 @@
       border: 1px solid #dce4ec;
       background: white;
       cursor: pointer;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
     }
 
-    .choice.correct { border-color: var(--success); background: #e8f7f1; }
-    .choice.wrong { border-color: var(--danger); background: #fff1eb; }
+    .choice:hover {
+      transform: translateY(-2px);
+      border-color: var(--cspire-blue);
+      background: #eefaff;
+      box-shadow: 0 10px 22px rgba(0, 163, 224, .14);
+    }
+
+    .choice:focus-visible {
+      outline: 3px solid rgba(0, 163, 224, .35);
+      outline-offset: 3px;
+    }
+
+    .choice.correct {
+      border-color: var(--success);
+      background: #e8f7f1;
+      box-shadow: 0 8px 18px rgba(14, 124, 89, .12);
+    }
+
+    .choice.wrong {
+      border-color: var(--danger);
+      background: #fff1eb;
+      box-shadow: 0 8px 18px rgba(194, 65, 12, .12);
+    }
 
     .feedback {
       display: none;

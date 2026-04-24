@@ -898,15 +898,15 @@
         why: "Managers need to know which costs are directly tied to delivery because those costs affect gross profit and margin.",
         example: "Examples may include device cost, direct installation labor, shipping, replacement equipment, or fulfillment costs.",
         formula: "Gross Profit = Revenue - COGS.",
-        question: "Which cost would MOST likely increase when you sell more units or complete more customer orders?",
+        question: "A customer order requires equipment and installation labor to complete. Which cost is most clearly COGS?",
         choices: [
-          "Direct installation labor for each customer order",
-          "Corporate office rent",
-          "Annual leadership training budget",
-          "General HR software subscription"
+          "The installation labor used to complete that customer order",
+          "The monthly rent for a corporate office",
+          "A leadership development workshop",
+          "A general HR software subscription"
         ],
         answer: 0,
-        feedback: "Correct. Direct installation labor increases as more customer orders are fulfilled, making it a direct cost (COGS)."
+        feedback: "Correct. The installation labor is directly tied to completing that customer order, so it is the clearest COGS example."
       },
       {
         id: "grossprofit",
@@ -1107,34 +1107,36 @@
 
     function answerTopic(topicId, choiceIndex, btn) {
       const t = topics.find(x => x.id === topicId);
-      const choices = document.querySelectorAll("#choices .choice");
+      const choices = Array.from(document.querySelectorAll("#choices .choice"));
+      const correctIndex = Number(t.answer);
+      const clickedIndex = choices.indexOf(btn);
+      const selectedIndex = clickedIndex >= 0 ? clickedIndex : Number(choiceIndex);
 
-      choices.forEach((c, i) => {
-        c.classList.remove("correct", "wrong");
-        if (i === t.answer) c.classList.add("correct");
+      choices.forEach((choice, index) => {
+        choice.classList.remove("correct", "wrong");
+        choice.disabled = false;
+        if (index === correctIndex) {
+          choice.classList.add("correct");
+        }
       });
 
       const feedback = document.getElementById("topicFeedback");
 
-      if (choiceIndex === t.answer) {
+      if (selectedIndex === correctIndex) {
         state.topicCompleted[topicId] = true;
         state.learnComplete = topics.every(x => state.topicCompleted[x.id]);
         saveState();
 
-        btn.classList.add("correct");
         feedback.className = "feedback good";
         feedback.textContent = "Correct. " + t.feedback;
 
-        // Update progress and navigation WITHOUT rebuilding the current lesson card.
-        // Rebuilding the lesson immediately after the click erased the answer feedback,
-        // which made the knowledge check feel like it was not working.
         renderNav();
         renderTopicListOnly();
         updateAll();
       } else {
         btn.classList.add("wrong");
         feedback.className = "feedback bad";
-        feedback.textContent = "Not quite. Review the definition and example, then try again.";
+        feedback.textContent = "Not quite. The correct answer is highlighted in green. Review the explanation, then try another topic or answer again.";
       }
     }
 

@@ -471,6 +471,16 @@
       color: var(--danger);
     }
 
+    .next-topic-btn {
+      display: none;
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .next-topic-btn.show {
+      display: inline-flex;
+    }
+
     label {
       display: block;
       font-weight: 900;
@@ -1101,6 +1111,34 @@
       state.activeTopic = id;
       saveState();
       renderTopics();
+      focusTopicContent();
+    }
+
+    function focusTopicContent() {
+      const content = document.getElementById("topicContent");
+      if (!content) return;
+
+      // On mobile, the lesson card sits below the topic list. This moves the learner
+      // directly to the lesson and knowledge check after they select a financial topic.
+      setTimeout(() => {
+        content.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 75);
+    }
+
+    function goToNextTopic() {
+      const currentIndex = topics.findIndex(t => t.id === state.activeTopic);
+      const nextTopic = topics[currentIndex + 1];
+
+      if (nextTopic) {
+        selectTopic(nextTopic.id);
+      } else {
+        if (state.learnComplete) {
+          goTo("apply");
+        } else {
+          const firstIncomplete = topics.find(t => !state.topicCompleted[t.id]);
+          if (firstIncomplete) selectTopic(firstIncomplete.id);
+        }
+      }
     }
 
     function renderTopicContent() {
@@ -1119,9 +1157,20 @@
             <p>${t.question}</p>
             <div id="choices">${t.choices.map((c, i) => `<button class="choice" onclick="answerTopic('${t.id}', ${i}, this)">${c}</button>`).join("")}</div>
             <div id="topicFeedback" class="feedback"></div>
+            <button id="nextTopicBtn" class="btn next-topic-btn" onclick="goToNextTopic()">Next Financial Topic</button>
           </div>
         </div>
       `;
+
+      if (done) {
+        const nextBtn = document.getElementById("nextTopicBtn");
+        if (nextBtn) {
+          const currentIndex = topics.findIndex(topic => topic.id === t.id);
+          const hasNext = currentIndex < topics.length - 1;
+          nextBtn.textContent = hasNext ? "Next Financial Topic" : "Continue to Apply the Numbers";
+          nextBtn.classList.add("show");
+        }
+      }
     }
 
     function answerTopic(topicId, choiceIndex, btn) {
@@ -1140,6 +1189,7 @@
       });
 
       const feedback = document.getElementById("topicFeedback");
+      const nextBtn = document.getElementById("nextTopicBtn");
 
       if (selectedIndex === correctIndex) {
         state.topicCompleted[topicId] = true;
@@ -1149,13 +1199,24 @@
         feedback.className = "feedback good";
         feedback.textContent = "Correct. " + t.feedback;
 
+        if (nextBtn) {
+          const currentIndex = topics.findIndex(topic => topic.id === topicId);
+          const hasNext = currentIndex < topics.length - 1;
+          nextBtn.textContent = hasNext ? "Next Financial Topic" : "Continue to Apply the Numbers";
+          nextBtn.classList.add("show");
+        }
+
         renderNav();
         renderTopicListOnly();
         updateAll();
       } else {
         btn.classList.add("wrong");
         feedback.className = "feedback bad";
-        feedback.textContent = "Not quite. The correct answer is highlighted in green. Review the explanation, then try another topic or answer again.";
+        feedback.textContent = "Not quite. The correct answer is highlighted in green. Review the explanation, then try again.";
+
+        if (nextBtn) {
+          nextBtn.classList.remove("show");
+        }
       }
     }
 

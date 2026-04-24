@@ -157,6 +157,18 @@
 
     main { min-width: 0; }
 
+    .app-shell.welcome-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .app-shell.welcome-mode aside {
+      display: none;
+    }
+
+    .app-shell.welcome-mode .page {
+      max-width: 1180px;
+    }
+
     .page {
       display: none;
       max-width: 1160px;
@@ -600,7 +612,7 @@
   </style>
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" id="appShell">
     <aside>
       <div class="brand">
         C Spire<small>Business Acumen Lab</small>
@@ -624,7 +636,7 @@
       <section class="page active" id="page-welcome">
         <div class="hero">
           <div class="hero-content">
-            <div class="eyebrow">Progressive Manager Development Experience</div>
+            <div class="eyebrow">Business &amp; Financial Acumen for Managers</div>
             <h1>Build financial confidence one skill at a time.</h1>
             <p>Managers move through a guided path: learn the language, pass knowledge checks, apply department numbers, map decisions to P&amp;L lines, and export evidence of skill.</p>
             <div class="btn-row">
@@ -1055,6 +1067,12 @@
       }).join("");
     }
 
+    function setShellMode() {
+      const shell = document.getElementById("appShell");
+      if (!shell) return;
+      shell.classList.toggle("welcome-mode", state.currentPage === "welcome");
+    }
+
     function goTo(page) {
       const pageDef = pages.find(p => p.id === page);
       if (pageDef && pageDef.locked && pageDef.locked()) return;
@@ -1062,6 +1080,7 @@
       saveState();
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById("page-" + page).classList.add("active");
+      setShellMode();
       renderAll();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -1262,6 +1281,7 @@
       state = { currentPage: "welcome", topicCompleted: {}, activeTopic: "pnl", learnComplete: false, applyComplete: false, mapperComplete: false };
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById("page-welcome").classList.add("active");
+      setShellMode();
       renderAll();
     }
 
@@ -1323,6 +1343,7 @@ The manager completed progressive financial language lessons, passed topic-level
 
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.getElementById("page-" + state.currentPage).classList.add("active");
+    setShellMode();
     renderAll();
   </script>
 </body>
